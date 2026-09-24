@@ -1,0 +1,12 @@
+# Nunca subir secretos ni dependencias locales a Vercel
+.env
+*.env
+atlas-credentials.env
+node_modules
+.vercel
+.DS_Store
+coverage
+*.log
+tests
+.env.local
+.env.*

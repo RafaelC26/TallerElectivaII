@@ -1,0 +1,396 @@
+/* Documentación (/api-docs): barra superior con los tokens de la página de inicio
+   y un tema ligero para Swagger UI. Swagger UI se mantiene claro también en modo
+   oscuro para que la documentación sea legible; solo la barra sigue el tema. */
+
+:root {
+    --bg: #F5F7F4;
+    --card: #FFFFFF;
+    --ink: #0B1F17;
+    --muted: #5B6B63;
+    --line: #DDE5DF;
+    --pitch: #0E7A4F;
+    --pitch-dark: #095C3B;
+    --pitch-soft: #E3F2EA;
+    --gold: #F2B632;
+    --danger: #C2412D;
+    --chip: rgba(11, 31, 23, 0.06);
+
+    --font: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --radius: 14px;
+    --radius-sm: 10px;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0A1410;
+        --card: #10201A;
+        --ink: #E7F0EA;
+        --muted: #9AB0A4;
+        --line: #1F3329;
+        --pitch: #34C98B;
+        --pitch-dark: #22A571;
+        --pitch-soft: #123325;
+        --gold: #F5C451;
+        --danger: #F07860;
+        --chip: rgba(231, 240, 234, 0.08);
+    }
+}
+
+html {
+    scroll-padding-top: 80px;
+}
+
+body {
+    margin: 0;
+    background: #FFFFFF;
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Barra superior ---------- */
+
+.docs-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px 24px;
+    min-height: 64px;
+    /* Alinea el contenido de la barra con el .wrapper de Swagger UI (máx. 1460px, 20px de margen) */
+    padding: 10px max(20px, calc((100% - 1460px) / 2 + 20px));
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+}
+
+.docs-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--ink);
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.docs-brand img {
+    display: block;
+    width: 28px;
+    height: 28px;
+}
+
+.docs-nav {
+    display: flex;
+    gap: 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.docs-nav::-webkit-scrollbar {
+    display: none;
+}
+
+.docs-nav a {
+    padding: 8px 12px;
+    border-radius: 8px;
+    color: var(--muted);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.15s ease, background-color 0.15s ease;
+}
+
+.docs-nav a:hover {
+    background: var(--chip);
+    color: var(--ink);
+}
+
+.docs-bar :focus-visible {
+    outline: 2px solid var(--pitch);
+    outline-offset: 2px;
+    border-radius: 6px;
+}
+
+@media (max-width: 560px) {
+    .docs-bar {
+        padding-inline: 16px;
+    }
+
+    .docs-nav {
+        width: 100%;
+        margin-inline: -8px;
+    }
+
+    .docs-nav a {
+        padding: 6px 8px;
+        font-size: 0.875rem;
+    }
+}
+
+/* ---------- Swagger UI (siempre claro) ---------- */
+
+#swagger-ui {
+    /* Los tokens se fijan en sus valores claros dentro de la documentación */
+    --bg: #F5F7F4;
+    --ink: #0B1F17;
+    --muted: #5B6B63;
+    --line: #DDE5DF;
+    --pitch: #0E7A4F;
+    --pitch-dark: #095C3B;
+    --pitch-soft: #E3F2EA;
+
+    display: block;
+    min-height: calc(100vh - 65px);
+    padding-bottom: 48px;
+    background: #FFFFFF;
+    color: var(--ink);
+    color-scheme: light;
+}
+
+/* Inter en los textos; el código conserva la fuente monoespaciada de Swagger UI */
+.swagger-ui,
+.swagger-ui button,
+.swagger-ui input,
+.swagger-ui select,
+.swagger-ui label,
+.swagger-ui .btn,
+.swagger-ui .btn.cancel,
+.swagger-ui .opblock-tag,
+.swagger-ui .opblock-tag small,
+.swagger-ui .opblock .opblock-section-header > label,
+.swagger-ui .opblock .opblock-section-header h4,
+.swagger-ui .opblock .opblock-summary-method,
+.swagger-ui .opblock .opblock-summary-description,
+.swagger-ui .opblock-summary-control,
+.swagger-ui .opblock-description-wrapper,
+.swagger-ui .opblock-description-wrapper h4,
+.swagger-ui .opblock-description-wrapper p,
+.swagger-ui .opblock-external-docs-wrapper,
+.swagger-ui .opblock-external-docs-wrapper h4,
+.swagger-ui .opblock-external-docs-wrapper p,
+.swagger-ui .opblock-title_normal,
+.swagger-ui .opblock-title_normal h4,
+.swagger-ui .opblock-title_normal p,
+.swagger-ui .tab li,
+.swagger-ui .tab li button.tablinks,
+.swagger-ui .responses-inner h4,
+.swagger-ui .responses-inner h5,
+.swagger-ui .response-col_status,
+.swagger-ui .response-col_links,
+.swagger-ui .download-contents,
+.swagger-ui .scheme-container .schemes > .schemes-server-container > label,
+.swagger-ui .servers > label,
+.swagger-ui section h3,
+.swagger-ui section.models h4,
+.swagger-ui section.models h5,
+.swagger-ui .model-box-control,
+.swagger-ui .models-control,
+.swagger-ui .model-title,
+.swagger-ui .model-deprecated-warning,
+.swagger-ui table thead tr td,
+.swagger-ui table thead tr th,
+.swagger-ui .parameter__name,
+.swagger-ui .info h1,
+.swagger-ui .info h2,
+.swagger-ui .info h3,
+.swagger-ui .info h4,
+.swagger-ui .info h5,
+.swagger-ui .info li,
+.swagger-ui .info p,
+.swagger-ui .info table,
+.swagger-ui .info a,
+.swagger-ui .info .title,
+.swagger-ui .info .title small pre,
+.swagger-ui .dialog-ux .modal-ux-content p,
+.swagger-ui .dialog-ux .modal-ux-content h4,
+.swagger-ui .dialog-ux .modal-ux-header h3,
+.swagger-ui .scopes h2,
+.swagger-ui .errors-wrapper hgroup h4 {
+    font-family: var(--font);
+}
+
+/* Encabezado de la especificación */
+.swagger-ui .info {
+    margin: 40px 0 32px;
+}
+
+.swagger-ui .info .title {
+    color: var(--ink);
+    font-size: clamp(1.75rem, 1.3rem + 2vw, 2.25rem);
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.swagger-ui .info .title small {
+    top: -8px;
+    padding: 3px 7px;
+    border-radius: 999px;
+    background: var(--muted);
+}
+
+.swagger-ui .info .title small.version-stamp {
+    background: var(--pitch);
+}
+
+.swagger-ui .info a {
+    color: var(--pitch);
+}
+
+.swagger-ui .info a:hover {
+    color: var(--pitch-dark);
+}
+
+.swagger-ui .info .base-url {
+    color: var(--muted);
+}
+
+/* Código dentro de las descripciones en Markdown */
+.swagger-ui .markdown code,
+.swagger-ui .renderedMarkdown code {
+    color: var(--pitch-dark);
+}
+
+/* Franja de servidores y botón Authorize */
+.swagger-ui .scheme-container {
+    padding: 24px 0;
+    border-block: 1px solid var(--line);
+    background: var(--bg);
+    box-shadow: none;
+}
+
+.swagger-ui .scheme-container .schemes > .schemes-server-container > label {
+    color: var(--ink);
+    font-weight: 600;
+}
+
+.swagger-ui select {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+}
+
+/* Botones */
+.swagger-ui .btn {
+    border-radius: 8px;
+    box-shadow: none;
+    font-weight: 600;
+}
+
+.swagger-ui .btn.authorize {
+    border-color: var(--pitch);
+    background-color: #FFFFFF;
+    color: var(--pitch);
+}
+
+.swagger-ui .btn.authorize svg {
+    fill: var(--pitch);
+    color: var(--pitch);
+}
+
+.swagger-ui .btn.authorize:hover {
+    background-color: var(--pitch-soft);
+}
+
+.swagger-ui .btn.execute,
+.swagger-ui .auth-btn-wrapper .btn.modal-btn.authorize {
+    border-color: var(--pitch);
+    background-color: var(--pitch);
+    color: #FFFFFF;
+}
+
+.swagger-ui .btn.execute:hover,
+.swagger-ui .auth-btn-wrapper .btn.modal-btn.authorize:hover {
+    border-color: var(--pitch-dark);
+    background-color: var(--pitch-dark);
+}
+
+.swagger-ui .btn.try-out__btn:not(.cancel) {
+    border-color: var(--pitch);
+    color: var(--pitch);
+}
+
+.swagger-ui .btn:focus-visible,
+.swagger-ui .opblock-summary-control:focus-visible,
+.swagger-ui input:focus-visible,
+.swagger-ui select:focus-visible,
+.swagger-ui textarea:focus-visible {
+    outline: 2px solid var(--pitch);
+    outline-offset: 2px;
+}
+
+/* Filtro por etiqueta */
+.swagger-ui .filter .operation-filter-input {
+    border: 1px solid var(--line);
+    border-radius: var(--radius-sm);
+    font-size: 0.9375rem;
+}
+
+.swagger-ui .filter .operation-filter-input:focus {
+    border-color: var(--pitch);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--pitch-soft);
+}
+
+/* Grupos de operaciones */
+.swagger-ui .opblock-tag {
+    border-bottom-color: var(--line);
+    color: var(--ink);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.swagger-ui .opblock-tag small {
+    color: var(--muted);
+    font-weight: 400;
+}
+
+.swagger-ui .opblock {
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+}
+
+.swagger-ui .opblock .opblock-summary-method {
+    border-radius: 6px;
+    font-weight: 700;
+}
+
+/* Modal de autorización */
+.swagger-ui .dialog-ux .modal-ux {
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: 0 24px 60px -20px rgba(11, 31, 23, 0.35);
+}
+
+.swagger-ui .dialog-ux .modal-ux-header h3 {
+    font-weight: 700;
+}
+
+.swagger-ui .auth-container input[type="text"],
+.swagger-ui .auth-container input[type="password"] {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+/* Sección de modelos */
+.swagger-ui section.models {
+    border-color: var(--line);
+    border-radius: var(--radius-sm);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .swagger-ui *,
+    .docs-nav a {
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+    }
+}

@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>API Equipos y Jugadores</title>
+    <meta name="description" content="API RESTful para gestionar equipos de fútbol y sus jugadores (relación uno a muchos) con Node.js, Express, Mongoose, MongoDB Atlas, JWT y Swagger.">
+    <meta name="color-scheme" content="light dark">
+    <meta name="theme-color" content="#F5F7F4" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#0A1410" media="(prefers-color-scheme: dark)">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="/css/styles.css">
+    <script src="/js/main.js" defer></script>
+</head>
+<body>
+    <svg class="sprite" aria-hidden="true" focusable="false">
+        <symbol id="i-copiar" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+        <symbol id="i-listo" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-candado" viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="10" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+        <symbol id="i-corona" viewBox="0 0 24 24"><path d="M4 17.5 3 7.5l5 4 4-6.5 4 6.5 5-4-1 10Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></symbol>
+        <symbol id="i-abrir" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9M18 14v4.5A1.5 1.5 0 0 1 16.5 20h-11A1.5 1.5 0 0 1 4 18.5v-11A1.5 1.5 0 0 1 5.5 6H10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-recargar" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.35-5.65M20 4v4.5h-4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    </svg>
+
+    <a class="saltar" href="#contenido">Saltar al contenido</a>
+
+    <header class="cabecera">
+        <div class="contenedor cabecera-fila">
+            <a class="marca" href="/" aria-label="API Equipos y Jugadores, inicio">
+                <img src="/favicon.svg" alt="" width="30" height="30">
+                <span>API Equipos y Jugadores</span>
+            </a>
+            <nav class="menu" aria-label="Secciones">
+                <a href="#endpoints">Endpoints</a>
+                <a href="#reglas">Reglas</a>
+                <a href="#seguridad">Seguridad</a>
+                <a href="#diagramas">Diagramas</a>
+            </nav>
+            <a class="btn btn-primario btn-cabecera" href="/api-docs"><span class="ocultar-movil">Probar en&nbsp;</span>Swagger</a>
+        </div>
+    </header>
+
+    <main id="contenido">
+        <!-- Portada -->
+        <section class="portada" aria-labelledby="titulo">
+            <div class="contenedor portada-rejilla">
+                <div class="portada-texto">
+                    <p class="estado" id="estado" role="status" data-estado="cargando">
+                        <span class="estado-punto" aria-hidden="true"></span>
+                        <span id="estado-texto">Comprobando…</span>
+                    </p>
+                    <h1 id="titulo">API Equipos y Jugadores</h1>
+                    <p class="portada-descripcion">
+                        API RESTful para gestionar equipos de fútbol y sus jugadores, con una relación uno a muchos:
+                        cada equipo tiene muchos jugadores y cada jugador pertenece a un solo equipo.
+                    </p>
+                    <div class="acciones">
+                        <a class="btn btn-primario btn-grande" href="/api-docs">Probar en Swagger</a>
+                        <a class="btn btn-secundario btn-grande" href="#endpoints">Ver endpoints</a>
+                    </div>
+                    <div class="url-base">
+                        <span class="url-base-etiqueta">URL base</span>
+                        <code id="url-base" data-origen>http://localhost:3000</code>
+                        <button type="button" class="btn-copiar" data-copiar="#url-base" aria-label="Copiar URL base">
+                            <svg class="icono" aria-hidden="true"><use href="#i-copiar"/></svg>
+                            <span class="btn-copiar-texto">Copiar</span>
+                        </button>
+                    </div>
+                    <ul class="tecnologias" aria-label="Tecnologías">
+                        <li>Node.js</li>
+                        <li>Express 5</li>
+                        <li>Mongoose</li>
+                        <li>MongoDB Atlas</li>
+                        <li>JWT</li>
+                        <li>Swagger / OpenAPI 3</li>
+                        <li>Vercel</li>
+                    </ul>
+                </div>
+
+                <div class="cancha" role="group" aria-labelledby="cancha-titulo">
+                    <svg class="cancha-lineas" viewBox="0 0 600 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+                        <g fill="none" stroke="currentColor" stroke-width="2.5">
+                            <rect x="24" y="24" width="552" height="372" rx="2"/>
+                            <path d="M300 24v372"/>
+                            <circle cx="300" cy="210" r="58"/>
+                            <path d="M24 120h86v180H24M24 168h30v84H24M576 120h-86v180h86M576 168h-30v84h30"/>
+                            <path d="M110 176a44 44 0 0 1 0 68M490 176a44 44 0 0 0 0 68"/>
+                        </g>
+                        <g fill="currentColor">
+                            <circle cx="300" cy="210" r="4"/>
+                            <circle cx="82" cy="210" r="3.5"/>
+                            <circle cx="518" cy="210" r="3.5"/>
+                        </g>
+                    </svg>
+                    <div class="consola">
+                        <div class="consola-barra">
+                            <span class="metodo metodo-get">GET</span>
+                            <code class="consola-ruta">/api/health</code>
+                            <span class="consola-codigo" id="salud-codigo" data-estado="cargando">…</span>
+                        </div>
+                        <pre class="consola-cuerpo" id="salud-json" tabindex="0" aria-label="Respuesta JSON de /api/health"><code><span class="j-comentario">// Esperando respuesta del servidor…</span></code></pre>
+                    </div>
+                    <div class="cancha-pie">
+                        <p id="cancha-titulo">Respuesta en vivo de este servidor</p>
+                        <button type="button" class="btn-cancha" id="salud-recargar">
+                            <svg class="icono" aria-hidden="true"><use href="#i-recargar"/></svg>
+                            Volver a comprobar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cómo usar -->
+        <section class="seccion" id="como-usar" aria-labelledby="como-usar-titulo">
+            <div class="contenedor uso-rejilla">
+                <div class="seccion-cabecera uso-cabecera">
+                    <h2 id="como-usar-titulo">Cómo usar la API</h2>
+                    <p class="seccion-entrada">
+                        Cree una cuenta, inicie sesión para recibir un token y envíelo en cada petición a equipos y jugadores.
+                    </p>
+                    <p class="uso-nota">
+                        ¿Prefiere el navegador? Los mismos pasos se hacen desde
+                        <a href="/api-docs">Swagger UI</a> con el botón <strong>Try it out</strong>.
+                    </p>
+                </div>
+
+                <ol class="pasos">
+                    <li class="paso">
+                        <span class="paso-numero" aria-hidden="true">1</span>
+                        <div class="paso-contenido">
+                            <h3>Registrarse</h3>
+                            <p>Envíe nombre, email y una contraseña de al menos 8 caracteres con letras y números.</p>
+                            <div class="codigo">
+                                <div class="codigo-barra">
+                                    <span>POST /api/auth/registro</span>
+                                    <button type="button" class="btn-copiar" data-copiar="#curl-registro" aria-label="Copiar comando de registro">
+                                        <svg class="icono" aria-hidden="true"><use href="#i-copiar"/></svg>
+                                        <span class="btn-copiar-texto">Copiar</span>
+                                    </button>
+                                </div>
+<pre id="curl-registro" tabindex="0"><code><span class="c-cmd">curl</span> <span class="c-opt">-X</span> POST <span class="c-url"><span data-origen>http://localhost:3000</span>/api/auth/registro</span> \
+  <span class="c-opt">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
+  <span class="c-opt">-d</span> <span class="c-str">'{"nombre":"Ana","email":"ana@example.com","password":"Clave2026"}'</span></code></pre>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="paso">
+                        <span class="paso-numero" aria-hidden="true">2</span>
+                        <div class="paso-contenido">
+                            <h3>Iniciar sesión y copiar el token</h3>
+                            <p>
+                                La respuesta incluye el campo <code>token</code>. Cópielo: vence según
+                                <code>JWT_EXPIRES_IN</code> (2 horas por defecto). El registro también devuelve uno.
+                            </p>
+                            <div class="codigo">
+                                <div class="codigo-barra">
+                                    <span>POST /api/auth/login</span>
+                                    <button type="button" class="btn-copiar" data-copiar="#curl-login" aria-label="Copiar comando de inicio de sesión">
+                                        <svg class="icono" aria-hidden="true"><use href="#i-copiar"/></svg>
+                                        <span class="btn-copiar-texto">Copiar</span>
+                                    </button>
+                                </div>
+<pre id="curl-login" tabindex="0"><code><span class="c-cmd">curl</span> <span class="c-opt">-X</span> POST <span class="c-url"><span data-origen>http://localhost:3000</span>/api/auth/login</span> \
+  <span class="c-opt">-H</span> <span class="c-str">"Content-Type: application/json"</span> \
+  <span class="c-opt">-d</span> <span class="c-str">'{"email":"ana@example.com","password":"Clave2026"}'</span></code></pre>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="paso">
+                        <span class="paso-numero" aria-hidden="true">3</span>
+                        <div class="paso-contenido">
+                            <h3>Enviar el token en cada petición</h3>
+                            <p>
+                                En Swagger pulse <strong>Authorize</strong> y pegue solo el token (Swagger agrega
+                                <code>Bearer</code>). Desde otro cliente use el header
+                                <code class="largo">Authorization: Bearer &lt;token&gt;</code>.
+                            </p>
+                            <div class="codigo">
+                                <div class="codigo-barra">
+                                    <span>GET /api/equipos</span>
+                                    <button type="button" class="btn-copiar" data-copiar="#curl-equipos" aria-label="Copiar comando de consulta de equipos">
+                                        <svg class="icono" aria-hidden="true"><use href="#i-copiar"/></svg>
+                                        <span class="btn-copiar-texto">Copiar</span>
+                                    </button>
+                                </div>
+<pre id="curl-equipos" tabindex="0"><code><span class="c-var">TOKEN</span>=<span class="c-str">"pegue-aquí-su-token"</span>
+<span class="c-cmd">curl</span> <span class="c-url"><span data-origen>http://localhost:3000</span>/api/equipos</span> \
+  <span class="c-opt">-H</span> <span class="c-str">"Authorization: Bearer $TOKEN"</span></code></pre>
+                            </div>
+                        </div>
+                    </li>
+                </ol>
+            </div>
+        </section>
+
+        <!-- Endpoints -->
+        <section class="seccion" id="endpoints" aria-labelledby="endpoints-titulo">
+            <div class="contenedor">
+                <div class="seccion-cabecera">
+                    <h2 id="endpoints-titulo">Endpoints</h2>
+                    <p class="seccion-entrada">
+                        Todas las rutas de <code>/api/equipos</code> y <code>/api/jugadores</code> exigen el header
+                        <code class="largo">Authorization: Bearer &lt;token&gt;</code>. <code>PUT</code> es una actualización parcial:
+                        solo cambian los campos enviados.
+                    </p>
+                </div>
+
+                <div class="grupos">
+                    <div class="grupo">
+                        <h3 class="grupo-titulo" id="g-auth">Autenticación</h3>
+                        <div class="tabla-marco">
+                            <table class="tabla" role="table" aria-labelledby="g-auth">
+                                <thead role="rowgroup">
+                                    <tr role="row">
+                                        <th role="columnheader" scope="col">Método</th>
+                                        <th role="columnheader" scope="col">Ruta</th>
+                                        <th role="columnheader" scope="col">Descripción</th>
+                                        <th role="columnheader" scope="col">Acceso</th>
+                                    </tr>
+                                </thead>
+                                <tbody role="rowgroup">
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-post">POST</span></td>
+                                        <td role="cell"><code class="ruta">/api/auth/registro</code></td>
+                                        <td role="cell">Crear una cuenta; siempre recibe el rol <code>usuario</code></td>
+                                        <td role="cell"><span class="acceso acceso-publico">Público</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-post">POST</span></td>
+                                        <td role="cell"><code class="ruta">/api/auth/login</code></td>
+                                        <td role="cell">Iniciar sesión y recibir el token JWT</td>
+                                        <td role="cell"><span class="acceso acceso-publico">Público</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/auth/perfil</code></td>
+                                        <td role="cell">Ver los datos del usuario autenticado</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grupo">
+                        <h3 class="grupo-titulo" id="g-equipos">Equipos</h3>
+                        <div class="tabla-marco">
+                            <table class="tabla" role="table" aria-labelledby="g-equipos">
+                                <thead role="rowgroup">
+                                    <tr role="row">
+                                        <th role="columnheader" scope="col">Método</th>
+                                        <th role="columnheader" scope="col">Ruta</th>
+                                        <th role="columnheader" scope="col">Descripción</th>
+                                        <th role="columnheader" scope="col">Acceso</th>
+                                    </tr>
+                                </thead>
+                                <tbody role="rowgroup">
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/equipos</code></td>
+                                        <td role="cell">Listar equipos. Filtros: <code>nombre</code>, <code>ciudad</code>, <code>pagina</code>, <code>limite</code></td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-post">POST</span></td>
+                                        <td role="cell"><code class="ruta">/api/equipos</code></td>
+                                        <td role="cell">Crear un equipo</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/equipos/<span class="param">:id</span></code></td>
+                                        <td role="cell">Ver un equipo con sus jugadores</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-put">PUT</span></td>
+                                        <td role="cell"><code class="ruta">/api/equipos/<span class="param">:id</span></code></td>
+                                        <td role="cell">Actualizar los campos enviados de un equipo</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-delete">DELETE</span></td>
+                                        <td role="cell"><code class="ruta">/api/equipos/<span class="param">:id</span></code></td>
+                                        <td role="cell">Eliminar un equipo; con <code>?cascada=true</code> también sus jugadores</td>
+                                        <td role="cell"><span class="acceso acceso-admin"><svg class="icono" aria-hidden="true"><use href="#i-corona"/></svg>JWT · admin</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/equipos/<span class="param">:id</span>/jugadores</code></td>
+                                        <td role="cell">Listar la plantilla de un equipo (relación 1:N)</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grupo">
+                        <h3 class="grupo-titulo" id="g-jugadores">Jugadores</h3>
+                        <div class="tabla-marco">
+                            <table class="tabla" role="table" aria-labelledby="g-jugadores">
+                                <thead role="rowgroup">
+                                    <tr role="row">
+                                        <th role="columnheader" scope="col">Método</th>
+                                        <th role="columnheader" scope="col">Ruta</th>
+                                        <th role="columnheader" scope="col">Descripción</th>
+                                        <th role="columnheader" scope="col">Acceso</th>
+                                    </tr>
+                                </thead>
+                                <tbody role="rowgroup">
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/jugadores</code></td>
+                                        <td role="cell">Listar jugadores. Filtros: <code>equipo</code>, <code>posicion</code>, <code>nombre</code>, <code>pagina</code>, <code>limite</code></td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-post">POST</span></td>
+                                        <td role="cell"><code class="ruta">/api/jugadores</code></td>
+                                        <td role="cell">Registrar un jugador en un equipo existente</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/jugadores/<span class="param">:id</span></code></td>
+                                        <td role="cell">Ver un jugador con los datos de su equipo</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-put">PUT</span></td>
+                                        <td role="cell"><code class="ruta">/api/jugadores/<span class="param">:id</span></code></td>
+                                        <td role="cell">Actualizar un jugador o transferirlo a otro equipo</td>
+                                        <td role="cell"><span class="acceso acceso-jwt"><svg class="icono" aria-hidden="true"><use href="#i-candado"/></svg>JWT</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-delete">DELETE</span></td>
+                                        <td role="cell"><code class="ruta">/api/jugadores/<span class="param">:id</span></code></td>
+                                        <td role="cell">Eliminar un jugador</td>
+                                        <td role="cell"><span class="acceso acceso-admin"><svg class="icono" aria-hidden="true"><use href="#i-corona"/></svg>JWT · admin</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="grupo">
+                        <h3 class="grupo-titulo" id="g-sistema">Sistema</h3>
+                        <div class="tabla-marco">
+                            <table class="tabla" role="table" aria-labelledby="g-sistema">
+                                <thead role="rowgroup">
+                                    <tr role="row">
+                                        <th role="columnheader" scope="col">Método</th>
+                                        <th role="columnheader" scope="col">Ruta</th>
+                                        <th role="columnheader" scope="col">Descripción</th>
+                                        <th role="columnheader" scope="col">Acceso</th>
+                                    </tr>
+                                </thead>
+                                <tbody role="rowgroup">
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api</code></td>
+                                        <td role="cell">Nombre, versión y recursos disponibles de la API</td>
+                                        <td role="cell"><span class="acceso acceso-publico">Público</span></td>
+                                    </tr>
+                                    <tr role="row">
+                                        <td role="cell"><span class="metodo metodo-get">GET</span></td>
+                                        <td role="cell"><code class="ruta">/api/health</code></td>
+                                        <td role="cell">Estado del servicio y de la conexión con MongoDB Atlas</td>
+                                        <td role="cell"><span class="acceso acceso-publico">Público</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="formatos">
+                    <h3 class="grupo-titulo">Formato de las respuestas</h3>
+                    <dl class="formatos-lista">
+                        <div>
+                            <dt>Listas</dt>
+                            <dd><code>{ datos: [ … ], paginacion: { total, pagina, limite, paginas } }</code></dd>
+                        </div>
+                        <div>
+                            <dt>Un recurso</dt>
+                            <dd><code>{ datos }</code></dd>
+                        </div>
+                        <div>
+                            <dt>Crear, actualizar o eliminar</dt>
+                            <dd><code>{ mensaje, datos }</code></dd>
+                        </div>
+                        <div>
+                            <dt>Registro e inicio de sesión</dt>
+                            <dd><code>{ mensaje, token, tipo: "Bearer", expiraEn, usuario }</code></dd>
+                        </div>
+                        <div>
+                            <dt>Errores</dt>
+                            <dd><code>{ error, detalles? }</code></dd>
+                        </div>
+                    </dl>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modelo de datos -->
+        <section class="seccion" id="modelo" aria-labelledby="modelo-titulo">
+            <div class="contenedor">
+                <div class="seccion-cabecera">
+                    <h2 id="modelo-titulo">Modelo de datos</h2>
+                    <p class="seccion-entrada">
+                        Un equipo tiene muchos jugadores y cada jugador pertenece a un solo equipo.
+                        La relación se guarda en el lado de los muchos.
+                    </p>
+                </div>
+
+                <div class="modelo">
+                    <article class="entidad" aria-labelledby="ent-equipo">
+                        <header class="entidad-cabecera">
+                            <h3 id="ent-equipo">Equipo</h3>
+                            <span>colección <code>equipos</code></span>
+                        </header>
+                        <ul class="campos">
+                            <li class="campo-clave"><code>_id</code><span class="tipo">ObjectId</span><span class="distintivo distintivo-pk">PK</span></li>
+                            <li><code>nombre</code><span class="tipo">String</span><span class="distintivo">único</span></li>
+                            <li><code>ciudad</code><span class="tipo">String</span></li>
+                            <li><code>estadio</code><span class="tipo">String</span></li>
+                            <li><code>anioFundacion</code><span class="tipo">Number</span></li>
+                            <li><code>entrenador</code><span class="tipo">String</span></li>
+                            <li class="campo-virtual"><code>jugadores</code><span class="tipo">Jugador[]</span><span class="distintivo">virtual</span></li>
+                            <li class="campo-virtual"><code>totalJugadores</code><span class="tipo">Number</span><span class="distintivo">virtual</span></li>
+                        </ul>
+                    </article>
+
+                    <div class="relacion">
+                        <p class="sr-only">Relación uno a muchos: un Equipo tiene de 0 a 25 Jugadores; cada Jugador pertenece a exactamente un Equipo.</p>
+                        <svg class="relacion-h" viewBox="0 0 160 64" aria-hidden="true" focusable="false">
+                            <text x="14" y="18">1</text>
+                            <text x="146" y="18" text-anchor="end">N</text>
+                            <path d="M6 40h148M16 30v20M20 30v20M154 28l-16 12 16 12M132 30v20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <text x="80" y="62" text-anchor="middle" class="relacion-etiqueta">tiene</text>
+                        </svg>
+                        <svg class="relacion-v" viewBox="0 0 120 88" aria-hidden="true" focusable="false">
+                            <path d="M60 4v80M50 12h20M50 16h20M48 84l12-16 12 16M50 62h20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+                            <text x="82" y="18">1</text>
+                            <text x="82" y="80">N</text>
+                            <text x="38" y="48" text-anchor="end" class="relacion-etiqueta">tiene</text>
+                        </svg>
+                    </div>
+
+                    <article class="entidad" aria-labelledby="ent-jugador">
+                        <header class="entidad-cabecera">
+                            <h3 id="ent-jugador">Jugador</h3>
+                            <span>colección <code>jugadores</code></span>
+                        </header>
+                        <ul class="campos">
+                            <li class="campo-clave"><code>_id</code><span class="tipo">ObjectId</span><span class="distintivo distintivo-pk">PK</span></li>
+                            <li><code>nombre</code><span class="tipo">String</span></li>
+                            <li><code>apellido</code><span class="tipo">String</span></li>
+                            <li><code>numeroCamiseta</code><span class="tipo">Number</span><span class="distintivo">1–99</span></li>
+                            <li><code>posicion</code><span class="tipo">String</span><span class="distintivo">enum</span></li>
+                            <li><code>fechaNacimiento</code><span class="tipo">Date</span><span class="distintivo">15+ años</span></li>
+                            <li><code>nacionalidad</code><span class="tipo">String</span></li>
+                            <li class="campo-ref"><code>equipo</code><span class="tipo">ObjectId</span><span class="distintivo distintivo-ref">ref Equipo</span></li>
+                        </ul>
+                    </article>
+                </div>
+
+                <p class="modelo-nota">
+                    <code>Jugador.equipo</code> guarda el <code>_id</code> del equipo. <code>Equipo</code> no guarda un arreglo de
+                    jugadores: los obtiene con un <em>populate</em> virtual, así la relación nunca queda desincronizada.
+                    <code>posicion</code> admite Portero, Defensa, Centrocampista o Delantero.
+                </p>
+            </div>
+        </section>
+
+        <!-- Reglas de negocio -->
+        <section class="seccion" id="reglas" aria-labelledby="reglas-titulo">
+            <div class="contenedor">
+                <div class="seccion-cabecera">
+                    <h2 id="reglas-titulo">Reglas de negocio</h2>
+                    <p class="seccion-entrada">
+                        Cada regla se valida en el servidor y responde con un código HTTP y un mensaje claro en
+                        <code>{ error }</code>.
+                    </p>
+                </div>
+
+                <ul class="reglas">
+                    <li class="regla">
+                        <h3>Nombre de equipo único</h3>
+                        <span class="http http-error">409 Conflict</span>
+                        <p>No puede haber dos equipos con el mismo nombre, sin importar mayúsculas: «Once Caldas» y «ONCE CALDAS» son el mismo.</p>
+                    </li>
+                    <li class="regla">
+                        <h3>El equipo debe existir</h3>
+                        <span class="http http-error">422 Unprocessable</span>
+                        <p>Un jugador solo se crea o se transfiere a un equipo que exista en la base de datos.</p>
+                    </li>
+                    <li class="regla">
+                        <h3>Camiseta única en el equipo</h3>
+                        <span class="http http-error">409 Conflict</span>
+                        <p>El número va del 1 al 99 y no se repite dentro de un mismo equipo. Fuera de ese rango responde 400.</p>
+                    </li>
+                    <li class="regla">
+                        <h3>Máximo 25 jugadores</h3>
+                        <span class="http http-error">409 Conflict</span>
+                        <p>Un equipo con 25 jugadores no acepta más, ni por registro ni por transferencia, aunque lleguen peticiones al mismo tiempo (transacción).</p>
+                    </li>
+                    <li class="regla">
+                        <h3>Edad mínima de 15 años</h3>
+                        <span class="http http-error">400 Bad Request</span>
+                        <p>La fecha de nacimiento debe corresponder a un jugador con al menos 15 años cumplidos.</p>
+                    </li>
+                    <li class="regla">
+                        <h3>Eliminación protegida</h3>
+                        <span class="http http-error">409 Conflict</span>
+                        <p>Un equipo con jugadores no se elimina. Con <code>?cascada=true</code> se eliminan el equipo y toda su plantilla.</p>
+                    </li>
+                    <li class="regla">
+                        <h3>Solo admin elimina</h3>
+                        <span class="http http-error">403 Forbidden</span>
+                        <p>Los <code>DELETE</code> exigen rol admin; un usuario normal recibe 403. El admin se crea con <code>npm run seed</code>.</p>
+                    </li>
+                    <li class="regla">
+                        <h3>Registro sin privilegios</h3>
+                        <span class="http http-ok">201 Created</span>
+                        <p>El registro público siempre crea el rol usuario. Si alguien envía <code>"rol": "admin"</code>, se ignora.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Seguridad -->
+        <section class="seccion" id="seguridad" aria-labelledby="seguridad-titulo">
+            <div class="contenedor">
+                <div class="seccion-cabecera">
+                    <h2 id="seguridad-titulo">Seguridad</h2>
+                    <p class="seccion-entrada">Qué protege a la API y a los datos de sus usuarios.</p>
+                </div>
+
+                <ul class="seguridad">
+                    <li>
+                        <h3>JWT HS256 con expiración</h3>
+                        <p>Los tokens se firman con HS256 y vencen (2 horas por defecto). Un token vencido o alterado recibe 401.</p>
+                    </li>
+                    <li>
+                        <h3>Contraseñas con bcrypt</h3>
+                        <p>Se guardan como hash bcrypt y nunca aparecen en las respuestas. El login no revela si un email existe.</p>
+                    </li>
+                    <li>
+                        <h3>Roles admin y usuario</h3>
+                        <p>Cualquier usuario autenticado consulta, crea y edita; solo el rol admin puede eliminar.</p>
+                    </li>
+                    <li>
+                        <h3>Rate limiting en login</h3>
+                        <p>Máximo 20 intentos de login o registro cada 15 minutos por IP, además de un límite general para <code>/api</code>.</p>
+                    </li>
+                    <li>
+                        <h3>Helmet: cabeceras seguras</h3>
+                        <p>Content-Security-Policy, HSTS, <code>X-Content-Type-Options</code> y otras cabeceras que endurecen el navegador.</p>
+                    </li>
+                    <li>
+                        <h3>Protección contra inyección NoSQL</h3>
+                        <p>Mongoose convierte operadores como <code>{"$gt": ""}</code> en valores literales antes de consultar.</p>
+                    </li>
+                    <li>
+                        <h3>Validación de datos</h3>
+                        <p>Los esquemas validan tipos, rangos y formatos, y los ids se comprueban antes de tocar la base de datos.</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Diagramas -->
+        <section class="seccion" id="diagramas" aria-labelledby="diagramas-titulo">
+            <div class="contenedor">
+                <div class="seccion-cabecera">
+                    <h2 id="diagramas-titulo">Diagramas</h2>
+                    <p class="seccion-entrada">Estructura del modelo, organización del código y despliegue de la solución.</p>
+                </div>
+
+                <div class="diagramas">
+                    <figure class="diagrama">
+                        <div class="diagrama-marco">
+                            <img src="/diagramas/diagrama-clases.svg" alt="Diagrama de clases con Usuario, Equipo y Jugador, sus atributos y la relación uno a muchos entre Equipo y Jugador" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <h3>Diagrama de clases</h3>
+                            <p>Usuario, Equipo y Jugador con sus atributos, y la relación 1:N entre Equipo y Jugador.</p>
+                            <a class="enlace-abrir" href="/diagramas/diagrama-clases.svg" target="_blank" rel="noopener">
+                                Abrir en tamaño completo<span class="sr-only"> (se abre en una pestaña nueva)</span>
+                                <svg class="icono" aria-hidden="true"><use href="#i-abrir"/></svg>
+                            </a>
+                        </figcaption>
+                    </figure>
+                    <figure class="diagrama">
+                        <div class="diagrama-marco">
+                            <img src="/diagramas/diagrama-componentes.svg" alt="Diagrama de componentes de la aplicación Express: rutas, middlewares, controladores, modelos y servicios externos" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <h3>Diagrama de componentes</h3>
+                            <p>Rutas, middlewares, controladores y modelos, y cómo se conectan con los servicios externos.</p>
+                            <a class="enlace-abrir" href="/diagramas/diagrama-componentes.svg" target="_blank" rel="noopener">
+                                Abrir en tamaño completo<span class="sr-only"> (se abre en una pestaña nueva)</span>
+                                <svg class="icono" aria-hidden="true"><use href="#i-abrir"/></svg>
+                            </a>
+                        </figcaption>
+                    </figure>
+                    <figure class="diagrama">
+                        <div class="diagrama-marco">
+                            <img src="/diagramas/diagrama-despliegue.svg" alt="Diagrama de despliegue: el cliente, la aplicación en Vercel y la base de datos en MongoDB Atlas" loading="lazy">
+                        </div>
+                        <figcaption>
+                            <h3>Diagrama de despliegue</h3>
+                            <p>El cliente, la aplicación desplegada en Vercel y el clúster de MongoDB Atlas.</p>
+                            <a class="enlace-abrir" href="/diagramas/diagrama-despliegue.svg" target="_blank" rel="noopener">
+                                Abrir en tamaño completo<span class="sr-only"> (se abre en una pestaña nueva)</span>
+                                <svg class="icono" aria-hidden="true"><use href="#i-abrir"/></svg>
+                            </a>
+                        </figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="pie">
+        <div class="contenedor pie-fila">
+            <p>Taller API RESTful · Electiva II – Desarrollo Web · Rafael Cristancho · 2026</p>
+            <nav class="pie-enlaces" aria-label="Documentación">
+                <a href="/api-docs">Swagger UI</a>
+                <a href="/api-docs.json">OpenAPI JSON</a>
+            </nav>
+        </div>
+    </footer>
+
+    <p class="sr-only" id="aviso" aria-live="polite"></p>
+</body>
+</html>

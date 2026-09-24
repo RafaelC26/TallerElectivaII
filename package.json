@@ -1,0 +1,43 @@
+{
+  "name": "api-equipos-jugadores",
+  "version": "1.0.0",
+  "description": "API RESTful para la gestión de Equipos y Jugadores (relación uno a muchos) con Node.js, Express, Mongoose, JWT y Swagger.",
+  "main": "src/app.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node scripts/seed.js",
+    "test": "node --test --test-concurrency=1 \"tests/**/*.test.js\""
+  },
+  "keywords": [
+    "api",
+    "rest",
+    "express",
+    "mongoose",
+    "jwt",
+    "swagger",
+    "mongodb-atlas"
+  ],
+  "author": "Rafael Cristancho",
+  "license": "ISC",
+  "engines": {
+    "node": ">=20.19"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.10.2"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^13.1.0",
+    "mongodb-memory-server": "^11.3.0",
+    "nodemon": "^3.1.14",
+    "supertest": "^7.3.0"
+  }
+}
